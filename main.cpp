@@ -16,17 +16,6 @@ struct Point {
     }
 };
 
-// Function to check if a rectangle with bottom-left corner p1 and top-right corner p2 is empty
-bool isEmptyRectangle(const Point& p1, const Point& p2, const vector<Point>& points) {
-    // Check if there's any point strictly inside the rectangle
-    for (const Point& p : points) {
-        if (p.x > p1.x && p.x < p2.x && p.y > p1.y && p.y < p2.y) {
-            return false;
-        }
-    }
-    return true;
-}
-
 int main() {
     int n;
     cin >> n;
@@ -48,14 +37,34 @@ int main() {
         for (int j = i + 1; j < n; j++) {
             // Check if points[i] can be bottom-left and points[j] can be top-right
             if (points[i].x < points[j].x && points[i].y < points[j].y) {
-                if (isEmptyRectangle(points[i], points[j], points)) {
+                // Check if there's any point strictly inside the rectangle
+                bool isEmpty = true;
+                for (int k = i + 1; k < j; k++) {
+                    // Since points are sorted by x, we only need to check points between i and j
+                    // And we only need to check y-coordinate
+                    if (points[k].y > points[i].y && points[k].y < points[j].y) {
+                        isEmpty = false;
+                        break;
+                    }
+                }
+                if (isEmpty) {
                     count++;
                 }
             }
             
             // Check if points[j] can be bottom-left and points[i] can be top-right
             if (points[j].x < points[i].x && points[j].y < points[i].y) {
-                if (isEmptyRectangle(points[j], points[i], points)) {
+                // Check if there's any point strictly inside the rectangle
+                bool isEmpty = true;
+                for (int k = min(i, j) + 1; k < max(i, j); k++) {
+                    // Since points are sorted by x, we only need to check points between i and j
+                    // And we only need to check y-coordinate
+                    if (points[k].y > points[j].y && points[k].y < points[i].y) {
+                        isEmpty = false;
+                        break;
+                    }
+                }
+                if (isEmpty) {
                     count++;
                 }
             }
